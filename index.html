@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- bootstrap -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="assets/bootstrap4/css/bootstrap.min.css">
+    <link type="text/css" rel="stylesheet" href="assets/css/style.css">
+    <!-- vue js -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="assets/js/vue-router.js"></script>
+    <title>YOURWORK</title>
+
+    <div id="top-page">
+        <!-- elemen root/utama dari SPA Vue -->
+        <!--  Navigasi utama aplikasi SPA
+          perhatikan tag "router-link" adalah tag khusus untuk membuat hyperlink ke router Vue -->
+        <nav class="navbar navbar-expand-lg navbar-dark" id="nav-main">
+            <router-link class="navbar-brand" to="/">YOUR WORK</router-link>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navigasi" aria-controls="navigasi" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <!-- list menu -->
+            <div class="collapse navbar-collapse py-1" id="navigasi">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item pl-5">
+                        <router-link class="nav-link" to="/job">JOB</router-link>
+                    </li>
+                    <li class="nav-item pl-5">
+                        <router-link class="nav-link" to="/job">COUPON</router-link>
+                    </li>
+                    <li class="nav-item pl-5">
+                        <router-link class="nav-link" to="/job">PLACE</router-link>
+                    </li>
+                </ul>
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item dropdown pr-2">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
+                        &nbsp;IND
+                        </a>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" href="#">Link 1</a>
+                            <a class="dropdown-item" href="#">Link 2</a>
+                            <a class="dropdown-item" href="#">Link 3</a>
+                        </div>
+                    </li>
+                    <li class="nav-item pr-3">
+                        <button class="btn btn-sm btn-outline-light my-1" id="btn-company" type="submit">Perusahaan</button>
+                    </li>
+                    <li class="nav-item pr-2">
+                        <div class="btn-group" role="group" aria-label="Basic example">
+                            <button type="button" id="button-in" class="btn btn-sm btn-light my-1">Masuk</button>
+                            <button type="button" id="button-reg" class="btn btn-sm btn-light my-1" style="border-left: 1px solid;">Daftar</button>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        
+
+        <!-- link dari "router-link" di atas akan merender view masing2 di dalam tag "router-view" -->
+        
+    </div>
+    
+</head>
+
+<body>
+    <div id="app">
+        <router-view></router-view>
+    </div>
+    
+
+    <!-- template view untuk komponen "Home" -->
+    <script type="text/x-template" id="home">
+        <div class="jumbotron jumbotron-fluid"><h1 class="display-4 text-center">{{ judul }}</h1>
+            <hr class="my-4"/>
+          <p class="lead text-center">{{ konten }}</p>
+        </div>
+    </script>
+
+    <template id="job">
+        <div v-if="job_filtered.length>0">
+            <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
+                <input type="text" class="form-control form-control-sm my-2 mr-3" v-model="keywordss" v-on:keyup="search" placeholder="Posisi jabatan yang dicari">
+                <select name="status" id="selectbox" class="form-control form-control-sm my-2 mr-3">
+                    <option value="">Semua Status Pekerjaan</option>
+                </select>
+                <select name="status" id="selectbox" class="form-control form-control-sm my-2 mr-3">
+                    <option value="">Semua Kategori</option>
+                </select>
+                <select name="status" id="selectbox" class="form-control form-control-sm my-2 mr-3">
+                    <option value="">Semua Provinsi</option>
+                </select>
+                <select name="status" id="selectbox" class="form-control form-control-sm my-2 mr-3">
+                    <option value="">Pilih Kota</option>
+                </select>
+                <button type="button" id="button-search" class="btn btn-sm btn-dark my-1">Search</button>
+            </nav>
+            <div class="container">
+                <div class="row justify-content-md-center mb-0">
+                    <div class="col-md-5">
+                        <p class="h5 mt-3">Lowongan Kerja Terbaru dan Terupdate</p>
+                    </div>
+                    <div class="col-md-5" id="show">
+
+                    </div>
+                </div>
+                <div class="row justify-content-md-center mt-1">
+                <div class="col-md-5 px-2 pb-2 pt-1" v-for="j in job_filtered">
+                    <div class="card h-80 shadow-sm" id="job-card" >
+                        <h4 class="card-header bg-transparent">{{j.perusahaan}}</h4>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-4 border-right mt-0">
+                                    <img class="card-img-top mt-3" src="http://placehold.it/700x400" alt="">
+                                </div>
+                                <div class="col-md-8">
+                                    <p id="position" class="card-text mb-1">{{ j.position }}</p>
+                                    <p id="salary" class="card-text mb-1 text-primary">{{ j.salary }}</p>
+                                    <p id="negotiable" class="card-text mb-1 text-success">{{ j.offer }}</p>
+                                    <p id="location" class="card-text mb-1 text-secondary">{{ j.info }} di <font>{{ j.location }}</font></p>
+                                    <p id="qualification" class="card-text mb-1 text-secondary">{{ j.info }} di <font>{{ j.qualification }}</font></p>
+                                    <p id="time" class="card-text text-secondary">{{ j.info }}<font>{{ j.time }}</font></p>
+                                    <!-- Footer -->
+                                    <div class="row mb-0">
+                                        <div class="col-md-6 ">
+                                            <p id="viewers" class="card-text text-dark">Dilihat 6.5k Orang</p>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <p id="applier" class="card-text text-dark">Pelamar 120 Orang</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                </div>
+            </div>
+        </div>
+        <div v-else>
+            <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
+                <input type="text" class="form-control form-control-sm my-2 mr-3" v-model="keywordss" v-on:keyup="search" placeholder="Posisi jabatan yang dicari">
+                <select name="status" id="selectbox" class="form-control form-control-sm my-2 mr-3">
+                    <option value="">Semua Status Pekerjaan</option>
+                </select>
+                <select name="status" id="selectbox" class="form-control form-control-sm my-2 mr-3">
+                    <option value="">Semua Kategori</option>
+                </select>
+                <select name="status" id="selectbox" class="form-control form-control-sm my-2 mr-3">
+                    <option value="">Semua Provinsi</option>
+                </select>
+                <select name="status" id="selectbox" class="form-control form-control-sm my-2 mr-3">
+                    <option value="">Pilih Kota</option>
+                </select>
+                <button type="button" id="button-search" class="btn btn-sm btn-dark my-1">Search</button>
+            </nav>
+        <div class="container">
+            <div class="row justify-content-md-center mb-0">
+                <div class="col-md-5">
+                    <p class="h5 mt-3">Lowongan Kerja Terbaru dan Terupdate</p>
+                </div>
+                <div class="col-md-5" id="show">
+                    <a role="button" id="button-filter" class="btn mt-3" data-toggle="modal" data-target="#Modal1">
+                        Filter <span class="dropdown-toggle"></span>
+                    </a>
+                </div>
+            </div>    
+            
+            
+            <div class="row justify-content-md-center mt-1">
+            <div class="col-md-5 px-2 pb-2 pt-1" v-for="j in job">
+                <div class="card h-80 shadow-sm" id="job-card" >
+                    <h4 class="card-header bg-transparent">{{j.perusahaan}}</h4>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4 border-right mt-0">
+                                <img class="card-img-top mt-3" src="http://placehold.it/700x400" alt="">
+                            </div>
+                            <div class="col-md-8">
+                                <p id="position" class="card-text mb-1">{{ j.position }}</p>
+                                <p id="salary" class="card-text mb-1 text-primary">{{ j.salary }}</p>
+                                <p id="negotiable" class="card-text mb-1 text-success">{{ j.offer }}</p>
+                                <p id="location" class="card-text mb-1 text-secondary">{{ j.info }} di <font>{{ j.location }}</font></p>
+                                <p id="qualification" class="card-text mb-1 text-secondary">{{ j.info }} di <font>{{ j.qualification }}</font></p>
+                                <p id="time" class="card-text text-secondary">{{ j.info }}<font>{{ j.time }}</font></p>
+                                <!-- Footer -->
+                                <div class="row mb-0">
+                                    <div class="col-md-6 ">
+                                        <p id="viewers" class="card-text text-dark">Dilihat 6.5k Orang</p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p id="applier" class="card-text text-dark">Pelamar 120 Orang</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+        </div>
+        </div>
+    </template>
+    
+    <!-- Modal -->
+    <div class="modal fade" id="Modal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Filter</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body" v-for="f in filter">
+                <div class="row justify-content-md-center mt-1">
+                    <div class="col-md-4 border-right">
+                        <p class="text-dark" id="subhead">Fasilitas</p>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
+                            <label class="form-check-label" for="defaultCheck1">
+                                <p>Parkir Khusus Karyawan</p>
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
+                            <label class="form-check-label" for="defaultCheck1">
+                                <p>Antar Jemput Karyawan</p>
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
+                            <label class="form-check-label" for="defaultCheck1">
+                                <p>Ruangan Kerja Ber-AC</p>
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
+                            <label class="form-check-label" for="defaultCheck1">
+                                <p>Internet 24 jam</p>
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
+                            <label class="form-check-label" for="defaultCheck1">
+                                <p>Telpon Kantor</p>
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
+                            <label class="form-check-label" for="defaultCheck1">
+                                <p>Ruangan Meeting</p>
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
+                            <label class="form-check-label" for="defaultCheck1">
+                                <p>Ruangan Kerja Outdoor</p>
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
+                            <label class="form-check-label" for="defaultCheck1">
+                                <p>Ruangan Makan</p>
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
+                            <label class="form-check-label" for="defaultCheck1">
+                                <p>Seragam Bebas</p>
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
+                            <label class="form-check-label" for="defaultCheck1">
+                                <p>Cemilan Gratis</p>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-md-4 border-right">
+                        <p class="text-dark" id="subhead">Benefit</p>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
+                            <label class="form-check-label" for="defaultCheck1">
+                                <p>Kontrak Kerja Yang Sah</p>                    
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
+                            <label class="form-check-label" for="defaultCheck1">
+                                <p>Waktu Kerja 5 Hari / Minggu</p>
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
+                            <label class="form-check-label" for="defaultCheck1">
+                                <p>8 Jam Kerja / Hari</p>
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
+                            <label class="form-check-label" for="defaultCheck1">
+                                <p>Komisi Penjualan</p>
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
+                            <label class="form-check-label" for="defaultCheck1">
+                                <p>Kenaikan Gaji</p>
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
+                            <label class="form-check-label" for="defaultCheck1">
+                                <p>Tunjangan Kesehatan</p>
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
+                            <label class="form-check-label" for="defaultCheck1">
+                                <p>Tunjangan Hari Tua</p>
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
+                            <label class="form-check-label" for="defaultCheck1">
+                                <p >Cuti Menikah</p>
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
+                            <label class="form-check-label" for="defaultCheck1">
+                                <p >Izin Tidur Siang Sejenak</p>
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
+                            <label class="form-check-label" for="defaultCheck1">
+                                <p>Hak Cuti Karyawan</p>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <p class="text-dark" id="subhead">Minimal Pengalaman</p>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
+                            <label class="form-check-label" for="defaultCheck1">
+                                <p>Semua</p>
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
+                            <label class="form-check-label" for="defaultCheck1">
+                                <p>SMP/SMA/SMK</p>
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
+                            <label class="form-check-label" for="defaultCheck1">
+                                <p>Fresh Graduate</p>
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
+                            <label class="form-check-label" for="defaultCheck1">
+                                <p>Junior</p>
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
+                            <label class="form-check-label" for="defaultCheck1">
+                                <p>Experience</p>
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
+                            <label class="form-check-label" for="defaultCheck1">
+                                <p>Senior</p>
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
+                            <label class="form-check-label" for="defaultCheck1">
+                                <p>Manager</p>
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
+                            <label class="form-check-label" for="defaultCheck1">
+                                <p>Director</p>
+                            </label>
+                        </div>
+                        <button type="button" id="button-apply" class="btn btn-sm btn-dark">Apply</button>
+                        <button type="button" id="button-reset" class="btn btn-sm btn-dark mt-2">Reset</button>
+                    </div>
+                </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    <!-- kode javascript untuk menjalankan Vue.js -->   
+    <script src="assets/js/app.js"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="assets/bootstrap4/js/bootstrap.bundle.min.js"></script>
+    
+</body>
+
+<footer class=" navbar py-5 bg-light mt-5">
+    <div class="container">
+        <div class="col-md-4" style="min-height: 125px;">
+            <h4>YourWORK</h4>
+            <p class="text-secondary" id="foot">YourWORK adalah sebuah perusahaan penyedia informasi lowongan pekerjaan terkemuka di Asia yang menghubungkan para pengguna dengan bisnis untuk meningkatkan taraf hidup dengan melalui karier yang lebih baik</p>
+        </div>
+        <div class="col-md-2 ml-1 float-right" style="min-height: 125px;">
+            <h4>USER</h4>
+            <p class="my-0"><a href="#" role="button" class="text-secondary" id="foot-usr">Users</a></p>
+            <p class="my-0"><a href="#" role="button" class="text-secondary" id="foot-usr">Register User</a></p>
+            <p class="my-0"><a href="#" role="button" class="text-secondary my-0" id="foot-usr">Terms & Condition User</a></p>
+            <p class="my-0"><a href="#" role="button" class="text-secondary my-0" id="foot-usr">FAQ User</a></p>
+        </div>
+        <div class="col-md-5" style="min-height: 125px;">
+            <h4>IKUTI KAMI</h4>
+            <div class="social mt-3">
+                <i id="facebook" class="fa fa-facebook mr-3"></i>
+                <i id="instagram" class="fa fa-instagram mr-3"></i>
+                <i id="google" class="fa fa-google-plus mr-3"></i>
+                <i id="youtube" class="fa fa-youtube mr-3"></i>
+                <i id="twitter" class="fa fa-twitter mr-3"></i>
+                <i id="linkedin" class="fa fa-linkedin mr-3"></i>
+            </div>
+        </div>
+    </div>
+</footer>
+</html>
